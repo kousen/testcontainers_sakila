@@ -6,7 +6,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -17,26 +16,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
-public class SakilaDBTest {
+public class ClassicSampleDBTest {
 
     @Container
-    private static final MySQLContainer<?> database = new MySQLContainer<>("mysql:latest")
-            .withDatabaseName("sakila")
-            .withUsername("test")
-            .withPassword("test")
-            .withEnv("MYSQL_ROOT_PASSWORD", "test")
+    static MySQLContainer<?> database = new MySQLContainer<>("mysql:latest")
+            //.withDatabaseName("classicmodels")
+            .withUsername("root")
+            .withPassword("")
+            .withEnv("MYSQL_ROOT_PASSWORD", "")
             .withCopyFileToContainer(
-                    MountableFile.forClasspathResource("sakila-db/sakila-both.sql"),
+                    MountableFile.forClasspathResource("mysqlsampledatabase.sql"),
                     "/docker-entrypoint-initdb.d/schema.sql"
             )
+//            .withInitScript("mysqlsampledatabase.sql")
             .withExposedPorts(3306);
 
-    @Autowired
-    private CountryRepository countryRepository;
-
     @Test
-    void shouldBe109countriesInRepository() {
-        assertThat(countryRepository.count()).isEqualTo(109);
+    void justSeeIfItAllWorked() {
+        assertThat(database.isRunning()).isTrue();
     }
 
     @DynamicPropertySource
