@@ -1,5 +1,6 @@
 package com.kousenit.testcontainers.dao;
 
+import com.kousenit.testcontainers.entities.Country;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -37,6 +38,15 @@ public class SakilaDBTest {
     @Test
     void shouldBe109countriesInRepository() {
         assertThat(countryRepository.count()).isEqualTo(109);
+    }
+
+    @Test
+    void citiesInUS() {
+        Country usa = countryRepository.findByName("United States");
+        System.out.println(usa);
+        System.out.println(usa.getName() + " has " +
+                usa.getCities().size() + " cities");
+        usa.getCities().forEach(city -> System.out.println(city.getName()));
     }
 
     @DynamicPropertySource

@@ -14,7 +14,7 @@ public class City {
     private Integer id;
 
     @Column(name = "city", nullable = false, length = 50)
-    private String city;
+    private String name;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "country_id", nullable = false)
@@ -39,12 +39,12 @@ public class City {
         this.country = country;
     }
 
-    public String getCity() {
-        return city;
+    public String getName() {
+        return name;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setName(String city) {
+        this.name = city;
     }
 
     public Integer getId() {
@@ -53,5 +53,14 @@ public class City {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "City{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lastUpdate=" + lastUpdate +
+                '}';
     }
 }
