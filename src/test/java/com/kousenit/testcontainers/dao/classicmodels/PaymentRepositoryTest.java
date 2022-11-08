@@ -1,6 +1,7 @@
-package com.kousenit.testcontainers.dao;
+package com.kousenit.testcontainers.dao.classicmodels;
 
-import com.kousenit.testcontainers.entities.Country;
+import com.kousenit.testcontainers.dao.classicmodels.PaymentRepository;
+import com.kousenit.testcontainers.entities.classicmodels.PaymentPK;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -18,35 +19,37 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
-public class SakilaDBTest {
+class PaymentRepositoryTest {
+    @Autowired
+    private PaymentRepository paymentRepository;
 
     @Container
-    private static final MySQLContainer<?> database = new MySQLContainer<>("mysql:latest")
-            .withDatabaseName("sakila")
-            .withUsername("test")
-            .withPassword("test")
-            .withEnv("MYSQL_ROOT_PASSWORD", "test")
+    static MySQLContainer<?> database = new MySQLContainer<>("mysql:latest")
+            .withDatabaseName("classicmodels")
+            .withUsername("root")
+            .withPassword("")
+            .withEnv("MYSQL_ROOT_PASSWORD", "")
             .withCopyFileToContainer(
-                    MountableFile.forClasspathResource("sakila-db/sakila-both.sql"),
+                    MountableFile.forClasspathResource("mysqlsampledatabase.sql"),
                     "/docker-entrypoint-initdb.d/schema.sql"
             )
             .withExposedPorts(3306);
 
-    @Autowired
-    private CountryRepository countryRepository;
-
     @Test
-    void shouldBe109countriesInRepository() {
-        assertThat(countryRepository.count()).isEqualTo(109);
+    void countPayments() {
+        assertThat(paymentRepository.count()).isEqualTo(273);
     }
 
     @Test
-    void citiesInUS() {
-        Country usa = countryRepository.findByName("United States");
-        System.out.println(usa);
-        System.out.println(usa.getName() + " has " +
-                usa.getCities().size() + " cities");
-        usa.getCities().forEach(city -> System.out.println(city.getName()));
+    void findAllByCustomerId() {
+        assertThat(paymentRepository.findAllByPaymentPKCustomerNumber(103))
+                .hasSize(3);
+    }
+
+    @Test
+    void findByPK() {
+        assertThat(paymentRepository.findById(new PaymentPK(103, "HQ336336")))
+                .isPresent();
     }
 
     @DynamicPropertySource

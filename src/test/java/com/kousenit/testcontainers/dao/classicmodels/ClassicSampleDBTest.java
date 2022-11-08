@@ -1,4 +1,4 @@
-package com.kousenit.testcontainers.dao;
+package com.kousenit.testcontainers.dao.classicmodels;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -17,10 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 public class ClassicSampleDBTest {
-
     @Container
     static MySQLContainer<?> database = new MySQLContainer<>("mysql:latest")
-            //.withDatabaseName("classicmodels")
+            .withDatabaseName("classicmodels")
             .withUsername("root")
             .withPassword("")
             .withEnv("MYSQL_ROOT_PASSWORD", "")
@@ -28,12 +27,22 @@ public class ClassicSampleDBTest {
                     MountableFile.forClasspathResource("mysqlsampledatabase.sql"),
                     "/docker-entrypoint-initdb.d/schema.sql"
             )
-//            .withInitScript("mysqlsampledatabase.sql")
             .withExposedPorts(3306);
 
     @Test
     void justSeeIfItAllWorked() {
         assertThat(database.isRunning()).isTrue();
+        System.out.println("Name: " + database.getContainerName());
+        System.out.println("Host: " + database.getHost());
+        System.out.println("Port: " + database.getFirstMappedPort());
+        System.out.println("JDBC URL: " + database.getJdbcUrl());
+        System.out.println("Username: " + database.getUsername());
+        System.out.println("Password: " + database.getPassword());
+        System.out.println("Database name: " + database.getDatabaseName());
+        System.out.println("Driver class name: " + database.getDriverClassName());
+        System.out.println("Docker image: " + database.getDockerImageName());
+        System.out.println("Container logs: " + database.getLogs());
+        System.out.println("Container port: " + database.getMappedPort(3306));
     }
 
     @DynamicPropertySource

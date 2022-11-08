@@ -1,4 +1,4 @@
-package com.kousenit.testcontainers.entities;
+package com.kousenit.testcontainers.entities.sakila;
 
 import javax.persistence.*;
 import java.time.Instant;
